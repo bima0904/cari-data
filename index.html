@@ -25,21 +25,37 @@
     <button onclick="searchData()">Cari</button>
     <div id="result"></div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
     <script>
-        let excelData = null;
+        let excelData = [];
 
-        // Fungsi untuk memuat file Excel dari URL GitHub Anda
-        function loadExcelFile() {
-            const url = 'https://bima0904.github.io/cari-data/REGISTRASI%20ULANG%20UKMC%20FEST%20x%20MOONTON%20STUDENT%20LEADER%20(Jawaban).xlsx';
+        // Fungsi untuk memuat data dari Google Sheets sebagai JSON
+        function loadGoogleSheet() {
+            const url = 'https://spreadsheets.google.com/feeds/cells/1bEIXf-yCBd_JFYs9DAHCoCNDvbX15Ru4da7A4UmeeYg/1/public/full?alt=json';
             fetch(url)
-                .then(response => response.arrayBuffer())
+                .then(response => response.json())
                 .then(data => {
-                    let workbook = XLSX.read(data, { type: 'array' });
-                    let firstSheet = workbook.Sheets[workbook.SheetNames[0]];
-                    excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                    const entries = data.feed.entry;
+                    let rows = [];
+                    let row = [];
+                    let lastRow = 1;
+
+                    // Parsing data Google Sheets ke dalam array
+                    entries.forEach(entry => {
+                        const cell = entry.gs$cell;
+                        const currentRow = parseInt(cell.row);
+
+                        if (currentRow !== lastRow) {
+                            rows.push(row);
+                            row = [];
+                            lastRow = currentRow;
+                        }
+                        row.push(cell.$t);
+                    });
+
+                    rows.push(row); // Tambahkan baris terakhir
+                    excelData = rows;
                 })
-                .catch(error => console.error('Error loading Excel file:', error));
+                .catch(error => console.error('Error loading Google Sheet:', error));
         }
 
         function searchData() {
@@ -47,23 +63,22 @@
             let result = document.getElementById('result');
             result.innerHTML = '';
 
-            if (excelData) {
-                // Buat table dan tambahkan header jika data ditemukan
+            if (excelData.length > 0) {
+                // Buat tabel dan tambahkan header
                 let table = `<table><tr>`;
-                
-                // Ambil header dari baris pertama excelData
+
+                // Header dari baris pertama (excelData[0])
                 excelData[0].forEach(header => {
                     table += `<th>${header}</th>`;
                 });
-                
+
                 table += `</tr>`;
 
-                // Iterasi melalui data untuk mencari kecocokan
+                // Iterasi data untuk mencari kecocokan
                 excelData.forEach((row, index) => {
-                    // Lewatkan baris header (index 0)
+                    // Lewatkan baris pertama yang merupakan header
                     if (index === 0) return;
-                    
-                    // Cek apakah ada cell yang cocok dengan searchTerm
+
                     let match = row.some(cell => String(cell).toLowerCase().includes(searchTerm));
                     if (match) {
                         table += `<tr>`;
@@ -76,19 +91,19 @@
 
                 table += `</table>`;
 
-                // Tampilkan table atau pesan jika tidak ada hasil
+                // Tampilkan tabel atau pesan jika tidak ada hasil
                 if (table === `<table><tr></tr></table>`) {
                     result.innerHTML = 'Tidak ada data yang cocok.';
                 } else {
                     result.innerHTML = table;
                 }
             } else {
-                result.innerHTML = 'Data Excel belum dimuat.';
+                result.innerHTML = 'Data Google Sheets belum dimuat.';
             }
         }
 
-        // Muat file Excel ketika halaman di-load
-        window.onload = loadExcelFile;
+        // Muat data Google Sheets ketika halaman di-load
+        window.onload = loadGoogleSheet;
     </script>
 </body>
 </html>
