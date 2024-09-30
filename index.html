@@ -4,6 +4,20 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Cari Data Registrasi UKMC FEST</title>
+    <style>
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        table, th, td {
+            border: 1px solid black;
+        }
+        th, td {
+            padding: 8px;
+            text-align: left;
+        }
+    </style>
 </head>
 <body>
     <h1>Cari Data Registrasi UKMC FEST</h1>
@@ -34,12 +48,40 @@
             result.innerHTML = '';
 
             if (excelData) {
+                // Buat table dan tambahkan header jika data ditemukan
+                let table = `<table><tr>`;
+                
+                // Ambil header dari baris pertama excelData
+                excelData[0].forEach(header => {
+                    table += `<th>${header}</th>`;
+                });
+                
+                table += `</tr>`;
+
+                // Iterasi melalui data untuk mencari kecocokan
                 excelData.forEach((row, index) => {
+                    // Lewatkan baris header (index 0)
+                    if (index === 0) return;
+                    
+                    // Cek apakah ada cell yang cocok dengan searchTerm
                     let match = row.some(cell => String(cell).toLowerCase().includes(searchTerm));
                     if (match) {
-                        result.innerHTML += `<p>${row.join(', ')}</p>`;
+                        table += `<tr>`;
+                        row.forEach(cell => {
+                            table += `<td>${cell}</td>`;
+                        });
+                        table += `</tr>`;
                     }
                 });
+
+                table += `</table>`;
+
+                // Tampilkan table atau pesan jika tidak ada hasil
+                if (table === `<table><tr></tr></table>`) {
+                    result.innerHTML = 'Tidak ada data yang cocok.';
+                } else {
+                    result.innerHTML = table;
+                }
             } else {
                 result.innerHTML = 'Data Excel belum dimuat.';
             }
