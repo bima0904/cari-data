@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cari Data Registrasi UKMC FEST</title>
+</head>
+<body>
+    <h1>Cari Data Registrasi UKMC FEST</h1>
+    <input type="text" id="searchTerm" placeholder="Masukkan kata kunci" />
+    <button onclick="searchData()">Cari</button>
+    <div id="result"></div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+    <script>
+        let excelData = null;
+
+        // Fungsi untuk memuat file Excel dari URL GitHub Anda
+        function loadExcelFile() {
+            const url = 'https://bima0904.github.io/cari-data/REGISTRASI%20ULANG%20UKMC%20FEST%20x%20MOONTON%20STUDENT%20LEADER%20(Jawaban).xlsx';
+            fetch(url)
+                .then(response => response.arrayBuffer())
+                .then(data => {
+                    let workbook = XLSX.read(data, { type: 'array' });
+                    let firstSheet = workbook.Sheets[workbook.SheetNames[0]];
+                    excelData = XLSX.utils.sheet_to_json(firstSheet, { header: 1 });
+                })
+                .catch(error => console.error('Error loading Excel file:', error));
+        }
+
+        function searchData() {
+            let searchTerm = document.getElementById('searchTerm').value.toLowerCase();
+            let result = document.getElementById('result');
+            result.innerHTML = '';
+
+            if (excelData) {
+                excelData.forEach((row, index) => {
+                    let match = row.some(cell => String(cell).toLowerCase().includes(searchTerm));
+                    if (match) {
+                        result.innerHTML += `<p>${row.join(', ')}</p>`;
+                    }
+                });
+            } else {
+                result.innerHTML = 'Data Excel belum dimuat.';
+            }
+        }
+
+        // Muat file Excel ketika halaman di-load
+        window.onload = loadExcelFile;
+    </script>
+</body>
+</html>
