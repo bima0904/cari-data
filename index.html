@@ -30,7 +30,7 @@
 
         // Fungsi untuk memuat data dari Google Sheets sebagai JSON
         function loadGoogleSheet() {
-            const url = 'https://spreadsheets.google.com/feeds/cells/2PACX-1vTju5oM8SY5SMorhe3hc065acZkCxmvRZKH7t_xnnLNh59sjyynfrgEcG0KnmBknQ/1/public/full?alt=json';
+            const url = 'https://spreadsheets.google.com/feeds/cells/2PACX-1vTju5oM8SY5SMorhe3hc065acZkCxmvRZKH7t_xnnLNh59sjyynfrgEcG0KnmBknQ/1/public/full?alt=json'';
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
