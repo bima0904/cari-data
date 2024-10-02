@@ -27,10 +27,10 @@
 
     <script>
         let excelData = [];
-
+//docs.google.com/spreadsheets/d/e/2PACX-1vSIIHVsnFRgarc36PfHBigeujtLSX7hmzm3tYr7MN3Ij_Zw5SsEl_frRZLqCPRvFeK7cg2qmbSxbOky/pubhtml
         // Fungsi untuk memuat data dari Google Sheets sebagai JSON
         function loadGoogleSheet() {
-            const url = 'https://spreadsheets.google.com/feeds/cells/2PACX-1vTju5oM8SY5SMorhe3hc065acZkCxmvRZKH7t_xnnLNh59sjyynfrgEcG0KnmBknQ/1/public/full?alt=json'';
+            const url = 'https://spreadsheets.google.com/feeds/cells/2PACX-1vSIIHVsnFRgarc36PfHBigeujtLSX7hmzm3tYr7MN3Ij_Zw5SsEl_frRZLqCPRvFeK7cg2qmbSxbOky/1/public/full?alt=json'';
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
