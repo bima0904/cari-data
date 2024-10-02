@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cari Data Registrasi UKMC FEST</title>
+    <title>Cari Data Peserta UKMC FEST</title>
     <style>
         table {
             width: 100%;
@@ -20,7 +20,7 @@
     </style>
 </head>
 <body>
-    <h1>Cari Data Registrasi UKMC FEST</h1>
+    <h1>DATA PESERTA MLBB UKMC FEST</h1>
     <input type="text" id="searchTerm" placeholder="Masukkan kata kunci" />
     <button onclick="searchData()">Cari</button>
     <div id="result"></div>
@@ -30,7 +30,7 @@
 
         // Fungsi untuk memuat data dari Google Sheets sebagai JSON
         function loadGoogleSheet() {
-            const url = 'https://spreadsheets.google.com/feeds/cells/1bEIXf-yCBd_JFYs9DAHCoCNDvbX15Ru4da7A4UmeeYg/1/public/full?alt=json';
+            const url = 'https://spreadsheets.google.com/feeds/cells/2PACX-1vTju5oM8SY5SMorhe3hc065acZkCxmvRZKH7t_xnnLNh59sjyynfrgEcG0KnmBknQ/1/public/full?alt=json';
             fetch(url)
                 .then(response => response.json())
                 .then(data => {
